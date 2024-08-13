@@ -1,8 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
+import random
 
+#seed = int(random.random()*100000000)
 process = cms.Process("Demo")
-
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
 process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
@@ -20,8 +21,13 @@ options.register('inputFile',
         VarParsing.VarParsing.varType.string,
         "File containing a list of the EXACT location of the output file  (default = ~/)"
         )
-
-
+options.register('fileID',
+        0, # default value
+        VarParsing.VarParsing.multiplicity.singleton,
+        VarParsing.VarParsing.varType.string,
+        "File ID"
+        )
+ 
 options.parseArguments()
 infilename = str(options.inputFile).split('/')[-1]
 print(infilename)
@@ -38,6 +44,19 @@ process.source = cms.Source("PoolSource",
                                 #'root://cms-xrd-global.cern.ch:1094//store/mc/RunIISummer20UL18RECO/GluGluHToGG_M-125_TuneCP5_13TeV-powheg-pythia8/AODSIM/106X_upgrade2018_realistic_v11_L1v1-v2/40000/418EDE70-2DF3-714A-8436-71F580A9ED86.root'
                                 )
                             )
+###########################################
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+
+    # Include a PSet for each module label that needs a
+    # random engine.  The name is the module label.
+    # You must supply a seed or seeds.
+    # Optionally an engine type can be specified
+    nTuplelize = cms.PSet(
+        initialSeed = cms.untracked.uint32(int(options.fileID))
+    )
+)
+print('Seed :',int(options.fileID))
+########################################
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 

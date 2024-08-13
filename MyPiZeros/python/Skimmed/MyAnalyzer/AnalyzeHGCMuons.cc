@@ -95,16 +95,17 @@ void AnalyzeHGCMuons::EventLoop(const char *data) {
     fillhist = 0;
         pAgen.SetPtEtaPhiM(A_Gen_pt->at(0), A_Gen_eta->at(0), A_Gen_phi->at(0), A_Gen_mass->at(0));
 
-	if(Pho_Gen_Pt->size() <2)
+	/*if(Pho_Gen_Pt->size() <2)
 	  {
 		continue;
-	  }
+	  }*/
         
         p1gen.SetPtEtaPhiE(Pho_Gen_Pt->at(0), Pho_Gen_Eta->at(0),Pho_Gen_Phi->at(0), Pho_Gen_E->at(0));
-	p2gen.SetPtEtaPhiE(Pho_Gen_Pt->at(1), Pho_Gen_Eta->at(1),Pho_Gen_Phi->at(1), Pho_Gen_E->at(1));
+        p2gen.SetPtEtaPhiE(Pho_Gen_Pt->at(0), Pho_Gen_Eta->at(0),Pho_Gen_Phi->at(0), Pho_Gen_E->at(0));
+	//p2gen.SetPtEtaPhiE(Pho_Gen_Pt->at(1), Pho_Gen_Eta->at(1),Pho_Gen_Phi->at(1), Pho_Gen_E->at(1));
         //Defining gen quantities
         genMass = A_Gen_mass->at(0);
-        genAngle = p1gen.Angle(p2gen.Vect());
+        //genAngle = p1gen.Angle(p2gen.Vect());
         float genEnergy = pAgen.Energy();
         float AgenPt = A_Gen_pt->at(0);
         float AgenEta = A_Gen_eta->at(0);
@@ -118,8 +119,8 @@ void AnalyzeHGCMuons::EventLoop(const char *data) {
          float pt2 = p2gen.Pt();
          float Epho1 = p1gen.Energy();
          float Epho2 = p2gen.Energy();
-	float deta=DeltaEta(Pho_Gen_Eta->at(1),Pho_Gen_Eta->at(0));
-        float dphi= DeltaPhi(Pho_Gen_Phi->at(1),Pho_Gen_Phi->at(0));
+	float deta=DeltaEta(Pho_Gen_Eta->at(0),Pho_Gen_Eta->at(0));
+        float dphi= DeltaPhi(Pho_Gen_Phi->at(0),Pho_Gen_Phi->at(0));
         
 	a_gen_gamma->Fill(gamma);
 	nGen->Fill(Pho_Gen_Pt->size());
@@ -178,6 +179,12 @@ float P2TotalCluRecE=0;
 
 
 for(int i =0;i<Hit_X_Pho1->size();i++){
+
+pho1_hitX->Fill(Hit_X_Pho1->at(i));
+pho1_hitY->Fill(Hit_Y_Pho1->at(i));
+pho1_hit_Z->Fill(abs(Hit_Z_Pho1->at(i)));
+pho1_hit_E->Fill(RecHitEnPho1->at(i));
+
 EE_XY_occupancy->Fill(Hit_X_Pho1->at(i),Hit_Y_Pho1->at(i));
 EE_XY_occu_En_weighed->Fill(Hit_X_Pho1->at(i),Hit_Y_Pho1->at(i),RecHitEnPho1->at(i));
 P1TotalRecE= P1TotalRecE +RecHitEnPho1->at(i);
@@ -189,6 +196,12 @@ Pho1_UnclRechitE_vs_A_gen_E->Fill(genEnergy,P1TotalUncRecE);
 Pho1_ClusRechitE_vs_A_gen_E->Fill(genEnergy,P1TotalCluRecE);
 
 for(int i =0;i<Hit_X_Pho2->size();i++){
+
+pho2_hitX->Fill(Hit_X_Pho2->at(i));
+pho2_hitY->Fill(Hit_Y_Pho2->at(i));
+pho2_hit_Z->Fill(abs(Hit_Z_Pho2->at(i)));
+pho2_hit_E->Fill(RecHitEnPho2->at(i));
+
 EE_XY_occupancy->Fill(Hit_X_Pho2->at(i),Hit_Y_Pho2->at(i));
 EE_XY_occu_En_weighed->Fill(Hit_X_Pho2->at(i),Hit_Y_Pho2->at(i),RecHitEnPho2->at(i));
 P2TotalRecE = P2TotalRecE + RecHitEnPho2->at(i);
@@ -211,7 +224,11 @@ float ES_pho1_en = 0;
 float ES_pho2_en =0;
 
 for(int i=0; i<Hit_ES_X_Pho1->size();i++){
-  ES_pho1_en = ES_pho1_en +ES_RecHitEnPho1->at(i);
+pho1_ES_hitX->Fill(Hit_ES_X_Pho1->at(i));  
+pho1_ES_hitY->Fill(Hit_ES_Y_Pho1->at(i));  
+pho1_ES_hit_Z->Fill(abs(Hit_ES_Z_Pho1->at(i)));
+pho1_ES_hit_E->Fill(ES_RecHitEnPho1->at(i));  
+ES_pho1_en = ES_pho1_en +ES_RecHitEnPho1->at(i);
 }
 for(int i=0; i<Hit_ES_X_Pho2->size();i++){
   ES_pho2_en = ES_pho2_en +ES_RecHitEnPho2->at(i);

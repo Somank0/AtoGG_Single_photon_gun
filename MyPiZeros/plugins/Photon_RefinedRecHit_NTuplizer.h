@@ -79,6 +79,12 @@
 #include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 
+// Included for filling random nos.
+
+#include "FWCore/Utilities/interface/RandomNumberGenerator.h"
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandFlat.h"
+
 //
 //
 // class declaration

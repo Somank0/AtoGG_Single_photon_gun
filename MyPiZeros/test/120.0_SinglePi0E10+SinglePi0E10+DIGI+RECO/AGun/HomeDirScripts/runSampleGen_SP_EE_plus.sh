@@ -1,6 +1,7 @@
 #!/usr/bin/bash
-cd /eos/user/s/sosaha/CMSSW_10_6_29/src/MySampleProduction/MyPiZeros/test/120.0_SinglePi0E10+SinglePi0E10+DIGI+RECO/AGun/;
+cd /eos/user/s/sosaha/CMSSW_single_photon/CMSSW_10_6_29/src/MySampleProduction/MyPiZeros/test/120.0_SinglePi0E10+SinglePi0E10+DIGI+RECO/AGun;
 export HOME=/afs/cern.ch/user/s/sosaha
+source /cvmfs/cms.cern.ch/cmsset_default.sh
 if [ -z $1 ] ; then
   echo "Please use: ./runSampleGen [massMin(MeV)] [massMax(MeV)] [stepSize(MeV)] [UniqueID]" && exit 1;
 fi
@@ -19,7 +20,7 @@ do
 	
 	echo "==============================Starting Sample generation for mass $i. GEN-SIM step=============================="
 	echo "------------------------------Using CMSSW_10_6_29------------------------------"
-	cmsRun AToGG_GEN_SIM_MeV_mass_fixed.py mass=$i ptMin=20 ptMax=100 etaMin=-2.5 etaMax=-1.44 maxEvents=2000 clusterID=$4;
+	cmsRun AToGG_GEN_SIM_MeV_mass_fixed.py mass=$i ptMin=20 ptMax=100 etaMin=1.44 etaMax=2.5 maxEvents=10000 clusterID=$4;
 	echo "==============================GEN-SIM step complete! Starting DIGI-PREMIX-RAW step=============================="
 	cmsRun genSimDigiRaw_mcProd_SS.py mass=$i clusterID=$4;
 	echo "==============================DIGI-PREMIX-RAW step complete! Starting HLT step=============================="
@@ -33,4 +34,6 @@ do
 	echo "------------------------------Using CMSSW_10_6_29------------------------------"
 	cmsRun recoStepUL2018_SS.py mass=$i clusterID=$4;
 	echo "==============================RECO-AOD step complete! Sample generation complete !=============================="
+        rm $4_SS_AToGG_DIGI_M$i.0.root;
+        rm $4_SS_AToGG_HLT_M$i.0.root;
 done

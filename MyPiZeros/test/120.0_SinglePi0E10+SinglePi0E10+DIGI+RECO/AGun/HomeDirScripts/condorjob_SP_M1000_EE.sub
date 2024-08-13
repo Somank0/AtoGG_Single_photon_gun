@@ -1,5 +1,5 @@
-executable = runSampleGen_EE_plus.sh
-arguments             = 1000 1100 300 $(ClusterId)
+executable = runSampleGen_SP_EE_plus.sh
+arguments             = 1000 1000 1000 $(ClusterId)
 output                =output/myjob.$(ClusterId).$(ProcId).out
 error                 =output/myjob.$(ClusterId).$(ProcId).err
 log                   =output/myjob.$(ClusterId).log

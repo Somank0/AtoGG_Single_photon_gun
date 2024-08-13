@@ -179,15 +179,19 @@ public:
   TH1F *pho1_hitX;
   TH1F *pho1_hitY;
   TH1F *pho1_hit_Z;
+  TH1F *pho1_hit_E;
   TH1F *pho2_hitX;
   TH1F *pho2_hitY;
   TH1F *pho2_hit_Z;
+  TH1F *pho2_hit_E;
   TH1F *pho1_ES_hitX;
   TH1F *pho1_ES_hitY;
   TH1F *pho1_ES_hit_Z;
+  TH1F *pho1_ES_hit_E;
   TH1F *pho2_ES_hitX;
   TH1F *pho2_ES_hitY;
   TH1F *pho2_ES_hit_Z;
+  TH1F *pho2_ES_hit_E;
   TH1F *angle_240_260;
   TH1F *angle_490_510;
   TH1F *angle_740_760;
@@ -356,15 +360,27 @@ void AnalyzeHGCMuons::BookHistogram(const char *outFileName)
     
 
   
-    r9_eta_1= new TH1F("R9 (1.44<= Eta <=1.57)","1.44<= Eta <=1.57",1000,-0.5,1.5);
-    r9_eta_2= new TH1F("R9 (1.57< Eta <2)","1.57< Eta <=2",1000,-0.5,1.5);
-    r9_eta_3=new TH1F("R9 2< Eta <=2.5","2< Eta <=2.5",1000,-0.5,1.5);
+    r9_eta_1            =  new TH1F ("R9 (1.44<= Eta <=1.57)" ,   "1.44<= Eta <=1.57" ,  1000 ,  -0.5 ,  1.5);
+    r9_eta_2            =  new TH1F ("R9 (1.57< Eta <2)"      ,   "1.57< Eta <=2"     ,  1000 ,  -0.5 ,  1.5);
+    r9_eta_3            =  new TH1F ("R9 2< Eta <=2.5"        ,   "2< Eta <=2.5"      ,  1000 ,  -0.5 ,  1.5);
     
-    pho1_EE_hit_eta =new TH1F("Photon1 EE rechit eta ","Pho1 EE hit eta",1000,-3,3);
-    pho2_EE_hit_eta = new TH1F("Photon2 EE rechit eta ","Pho2 EE hit eta",1000,-3,3);
-    pho1_hitX = new TH1F("Photon1 EE hits X","Phho1_hit_X",1000,-160,160);
- 
-    ES_L1_hits= new TH1F ("ES Layer 1 hits","ES_L1_hits",1000,0,300);
+    pho1_EE_hit_eta     =  new TH1F ("Photon1 EE rechit eta " ,   "Pho1 EE hit eta"   ,  1000 ,   -3  ,  3);
+    pho2_EE_hit_eta     =  new TH1F ("Photon2 EE rechit eta " ,   "Pho2 EE hit eta"   ,  1000 ,   -3  ,  3);
+    pho1_hitX           =  new TH1F ("Pho1_hit_x"             ,   "Pho1_hit_x"        ,  1000 ,  -160 , 160);
+    pho1_hitY           =  new TH1F ("Pho1_hit_y"             ,   "Pho1_hit_y"        ,  1000 ,  -160 , 160);
+    pho1_hit_Z          =  new TH1F ("Pho1_hit_z"             ,   "Pho1_hit_z"        ,  1000 ,    0  , 350);
+    pho1_hit_E          =  new TH1F ("Pho1_hit_E"             ,   "Pho1_hit_E"        ,  1000 ,    0  , 100);
+
+    pho2_hitX           =  new TH1F ("Pho2_hit_x"             ,   "Pho2_hit_x"        ,  1000 ,  -160 , 160);
+    pho2_hitY           =  new TH1F ("Pho2_hit_y"             ,   "Pho2_hit_y"        ,  1000 ,  -160 , 160);
+    pho2_hit_Z          =  new TH1F ("Pho2_hit_z"             ,   "Pho2_hit_z"        ,  1000 ,    0  , 350);
+    pho2_hit_E          =  new TH1F ("Pho2_hit_E"             ,   "Pho2_hit_E"        ,  1000 ,    0  , 100);
+
+    pho1_ES_hitX        =  new TH1F ("Pho1_ES_hit_x"          ,   "Pho1_ES_hit_x"     ,  1000 ,  -160 , 160);
+    pho1_ES_hitY        =  new TH1F ("Pho1_ES_hit_y"          ,   "Pho1_ES_hit_y"     ,  1000 ,  -160 , 160);
+    pho1_ES_hit_Z       =  new TH1F ("Pho1_ES_hit_z"          ,   "Pho1_ES_hit_z"     ,  1000 ,   300 , 350);
+    pho1_ES_hit_E       =  new TH1F ("Pho1_ES_hit_E"          ,   "Pho1_ES_hit_E"     ,  1000 ,   0   , 0.2);
+    ES_L1_hits          = new TH1F ("ES Layer 1 hits","ES_L1_hits",1000,0,300);
     ES_L2_hits=new TH1F("ES Layer 2 hits","ES_L2_hits",1000,0,300);
     ES_L1_L2_hits_En_weighed= new TH1F  ("ES Layers  hits weighed by rechit energy","ES_L1_L2_hits_en_weighed",1000,290,320);
     

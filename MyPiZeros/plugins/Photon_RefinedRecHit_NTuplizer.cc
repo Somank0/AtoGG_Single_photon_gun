@@ -29,6 +29,10 @@ Photon_RefinedRecHit_NTuplizer::Photon_RefinedRecHit_NTuplizer(const edm::Parame
     // if (useOuterHits_) readLUTables(); // read look up tables (dR = 0.3 for now)
     if (useOuterHits_)
         readROOTLUTables(); // read look up tables (dR = 0.3 for now)
+
+   // For random number generator
+     edm::Service<edm::RandomNumberGenerator> rng;
+
 }
 
 Photon_RefinedRecHit_NTuplizer::~Photon_RefinedRecHit_NTuplizer()
@@ -200,7 +204,23 @@ void Photon_RefinedRecHit_NTuplizer::analyze(const edm::Event &iEvent, const edm
     // get maps
     // getEBMapXML(iSetup);
     // getEEMapXML(iSetup);
-
+//"================================== Random Number generator ================================================"
+//################################################################################################################
+     edm::Service<edm::RandomNumberGenerator> rng;
+if(!rng.isAvailable()) {
+    throw cms::Exception("Configuration")
+      << "Module requires the RandomNumberGeneratorService,\n"
+         "which is not present in the configuration file. You must add\n"
+         "the service in the configuration file or remove the modules that\n"
+         "require it.\n";
+  }
+     CLHEP::HepRandomEngine& engine = rng->getEngine(iEvent.streamID());
+     double min = -0.3;
+     double max = 0.0;
+// ALWAYS pass a pointer to an engine to shoot!!!
+     double randomNumber = CLHEP::RandFlat::shoot(&engine, min, max) ;
+     //double randomNumber = engine.flat();
+//#######################################################################################################
     ESHandle<CaloGeometry> pG;
     iSetup.get<CaloGeometryRecord>().get(pG);
     iSetup.get<EcalPedestalsRcd>().get(_ped);
@@ -219,17 +239,22 @@ void Photon_RefinedRecHit_NTuplizer::analyze(const edm::Event &iEvent, const edm
     run = 0;
     event = 0;
     lumi = 0;
-
+    
     ///////////////////////////Fill Electron/Photon related stuff/////////////////////////////////////////////////////
     for (edm::View<GenParticle>::const_iterator part = genParticles->begin(); part != genParticles->end(); ++part)
-    {
-          if( abs(part->pdgId())==36)
-          {
+    { 
+          //srand(time(0));     
+          //double m = (double)rand()/RAND_MAX; 
+          
+          if( abs(part->pdgId())==22)
+          {   
               //cout<<part->mass()<<endl;
-              A_Gen_mass.push_back(part->mass());
+              //cout<< m << "\t"<<part<<endl;
+              A_Gen_mass.push_back(randomNumber);
               A_Gen_pt.push_back(part->pt());
               A_Gen_eta.push_back(part->eta());
               A_Gen_phi.push_back(part->phi());
+             // cout<< randomNumber << endl;
 	  }
     }
 		
@@ -610,16 +635,18 @@ void Photon_RefinedRecHit_NTuplizer::analyze(const edm::Event &iEvent, const edm
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////// Gen Stuff hardcaded for status 1 photons for now /////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     if (isMC_)
     {
         for (edm::View<GenParticle>::const_iterator part = genParticles->begin(); part != genParticles->end(); ++part)
         {
             if (part->status() == 1 && abs(part->pdgId()) == 22)
-            {
+            {   
                 Pho_Gen_Pt.push_back(part->pt());
                 Pho_Gen_Eta.push_back(part->eta());
                 Pho_Gen_Phi.push_back(part->phi());
                 Pho_Gen_E.push_back(part->energy());
+ 
             }
         }
     }

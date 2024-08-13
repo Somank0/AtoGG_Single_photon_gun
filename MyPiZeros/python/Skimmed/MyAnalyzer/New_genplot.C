@@ -216,143 +216,21 @@ gPad->Update();
   } 
 }
 
-void generate_2Dplot(vector<TH2F*> hist,char const *tag_name="",char const *xlabel="",char const *ylabel="",  int rebin=-1,double ymin=0,double ymax=0,int xmin=-1,int xmax=-1,
-char const *leg_head="",bool normalize=false, bool log_flag=false, bool DoRebin=false, bool Text =false, bool save_canvas=true, char const *title="", vector<string> legend_texts={"nil"})
-{  
-     TCanvas *canvas_n1 = new TCanvas(tag_name, tag_name,950,850);
-       canvas_n1->Range(-60.25,-0.625,562.25,0.625);
-       canvas_n1->SetFillColor(0);
-       canvas_n1->SetBorderMode(0);
-       canvas_n1->SetBorderSize(1);
-       canvas_n1->SetLeftMargin(0.124);
-       canvas_n1->SetRightMargin(0.035);
-       canvas_n1->SetTopMargin(0.04);
-       canvas_n1->SetBottomMargin(0.1);
-       //THStack *hs_var=new THStack("var_Stack","");
-       gStyle->SetOptStat(1111111);
-       //   gStyle->SetOptStat(0);
-       //double pvt_x_min = 0.6;
-  double pvt_x_min = 0.75;
-  double pvt_x_max = 0.99;
-  double pvt_y_min = 0.9;
-  //double pvt_dely = 0.18;
-  double pvt_dely = 0.15;
-  gStyle->SetOptStat(0);
-  gROOT->ForceStyle();
-  //gStyle->SetOptFit(0);
-  vector<TString> legName;
-  //TLegend *legend = new TLegend(0.65,0.95,0.99,0.75);
-  std::string leg_head_str = leg_head;
-  double x = 0.15;
-  double y = 0.90;
-  TLegend *legend;
-  //legend = new TLegend(0.60,0.88,0.98,0.72);  
-  legend = new TLegend(0.21,0.82,0.65,0.95);  
-  legend->SetTextSize(0.055);
-  legend->SetLineColor(kWhite);
-  legend->SetNColumns(4);
-  char* lhead = new char[100];
+struct MixedData {
+    std::string str1;
+    std::string str2;
+    int intData;
+    double double1;
+    double double2;
+    double double3;
+    double double4;
+    std::string str3;
+};
 
-  sprintf(lhead,"#bf{%s} ",title);
-  legend->SetHeader(lhead);
-  legend->SetLineColor(kWhite);
-
-  TLegendEntry* leg_entry[11];
-  float x_label_size = 0.04;
-  double xrange = xmax;
-  
-  vector<TH2F*> hist_list_temp;
-  cout<<" hist.size() = "<<hist.size()<<endl;
-  
-  for(int i =0;i<(int)hist.size(); i ++) {
-    
-   
-    hist.at(i)->GetYaxis()->SetTitle(ylabel);
-    hist.at(i)->SetLineWidth(line_width[i]);
-    hist.at(i)->SetLineStyle(line_style[i]);
-    hist.at(i)->SetLineColor(line_color[i]);
-    hist.at(i)->SetTitle(" ");
-    hist.at(i)->GetXaxis()->SetTitleSize(0.05);
-    hist.at(i)->GetXaxis()->SetLabelSize(0.05);
-    hist.at(i)->GetYaxis()->SetTitleSize(0.05);
-    hist.at(i)->GetYaxis()->SetLabelSize(0.05);
-    hist.at(i)->GetYaxis()->SetTitleOffset(1.1);
-    hist.at(i)->GetYaxis()->SetLabelSize(x_label_size);
-    hist.at(i)->SetLineColor(line_color[i]);
-    hist.at(i)->SetTitle("");
-    //
-    hist.at(i)->GetXaxis()->SetTitleSize(0.04);
-    hist.at(i)->GetXaxis()->SetTitle(xlabel);
-    hist.at(i)->GetYaxis()->SetTitleSize(0.05);
-    hist.at(i)->GetYaxis()->SetLabelSize(0.040);
-    hist.at(i)->GetYaxis()->SetTitleOffset(1.2);
-   //  decorate(hist.at(i),i);
-    hist.at(i)->SetMarkerSize(0.8);
-    hist.at(i)->SetMarkerStyle(20);
-    hist.at(i)->SetMarkerColor(line_color[i]);
-    hist.at(i)->GetYaxis()->SetTitleOffset(1.3);
-    hist.at(i)->GetXaxis()->SetLabelSize(0.04);
-
-    legName.push_back(hist.at(i)->GetName());
-    leg_entry[i] = legend->AddEntry(hist.at(i),legend_texts[i].c_str(),"e2p");
-    leg_entry[i]->SetTextColor(hist.at(i)->GetLineColor());
-    
-    if(hist.at(i)->GetMaximum() > ymax) ymax = hist.at(i)->GetMaximum();
-    if(hist.at(i)->GetMinimum() < ymin) ymin = hist.at(i)->GetMinimum();
-
-    
-
-  }
-  if(ymin == 0.0) ymin = 1e-3;
-  if(ymin<0.0) ymin = 1e-4;
-  //  if(ymax<=10) ymax=10;
-  for(int i = 0;i<(int)hist.size(); i++) {
-    if(!normalize) {hist.at(i)->GetYaxis()->SetRangeUser(0.0001,1.1*ymax);hist.at(i)->GetXaxis()->SetRangeUser(xmin,1.05*xmax);}
-    else
-      {  hist.at(i)->GetZaxis()->SetRangeUser(0.00001,1.1);
-       hist.at(i)->GetYaxis()->SetRangeUser(0.0001,1.1*ymax);hist.at(i)->GetXaxis()->SetRangeUser(xmin,1.05*xmax);
-      }
-    cout<<"i"<<i<<endl;
-    if(Text){
-    if(i==0) hist.at(i)->Draw("colz+text ");
-    else hist.at(i)->Draw("colz+text sames");
-    }	
-    else {
-      if(i==0) hist.at(i)->Draw("colz ");
-    else hist.at(i)->Draw("colz sames");
-    }
-  }
-  legend->Draw();
-  if(log_flag) {
-      gPad->SetLogz();
-    }
-gPad->Update(); 
-  TLatex* textOnTop = new TLatex();
-  //new
-    textOnTop->SetTextSize(0.054);
-  //textOnTop->DrawLatexNDC(0.146,0.925,"CMS #it{#bf{Simulation Preliminary}}");
-  char* en_lat = new char[500];
-  textOnTop->SetTextSize(0.054);
-  //textOnTop->DrawLatexNDC(0.72,0.925,en_lat);
-
-
-  gPad->Modified();
-                                                                                       
-    
- char* canvas_name = new char[1000];
-  //c->Print(canvas_name);
-  
-  if(save_canvas) {
-    sprintf(canvas_name,"%s.png",tag_name);
-     canvas_n1->SaveAs(canvas_name);   
-     sprintf(canvas_name,"%s.pdf",tag_name);
-    canvas_n1->SaveAs(canvas_name);  
-  } 
-}
 const int nfiles=100;                                                                                                                                                             
 TFile *f[nfiles];
 
-void generate1Dplot()
+void New_genplot()
 {
   char* hname = new char[200];
   
@@ -367,30 +245,33 @@ void generate1Dplot()
  
     f[0] = new TFile("plot.root");
     
-    vector<string> filetag=  {"Single photon gun: 1K events"};
-   vector<vector<string>> legend_texts;  
-    legend_texts ={{"Mass of A"},{"Gen pT of A"},{"Gen #eta of A"},{"Gen #phi of A"},{"Gen energy of A"},{"Lorentz boost of A"},{"No. of gen photons"},{"Pho1 gen #eta"},{"Pho1 gen #phi"},{"Pho1 gen pT"},
-    {"Pho1 gen energy"},{"No. of reco photons"},{"Pho1 EE rechit #eta"},{"Pho1_hit_x"},{"Pho1_hit_y"},{"Pho1_hit_z"}, {"Pho1_hit_E"},{"ES L1 hits"},{"ES L2 hits"}};
-
-  vector<string>varName;
- 
-   varName ={"M_gen","A_gen_pT","A_gen_eta","A_gen_phi","A_gen_energy","Lorentz boost of A","No. of gen photons","Photon1 gen eta","Photon1 gen phi","Photon1 gen pT","Photon1 gen E",
-  "No. of reco photons",  "Photon1 EE rechit eta", "Pho1_hit_x", "Pho1_hit_y","Pho1_hit_z","Pho1_hit_E", "ES Layer 1 hits","ES Layer 2 hits"};                        
-   vector <string>  xLabel;
-
-  xLabel={"Mass (GeV)","Gen pT (in GeV)","#eta","#phi","Energy (GeV)","Lorentz boost", "No. of gen photons","#eta","#phi","pT (GeV)","Energy (GeV)",  "No. of reco photons","#eta","ECAL X (cm)", "ECAL Y (cm)","ECAL |Z| (cm)", "Energy (GeV)","No. of ES L1 hits per event","No. of ES L2 hits per event"};  
+    vector<string> filetag=  {"Sample size:112K"};
+MixedData varName[] = {{"M_gen","Mass (GeV)",10,0,2000,0,2.1,"mass of A"},{"A_gen_pT","pT (GeV)",10,1,2000,0,120,"Gen pT of A"},{"A_gen_eta","#eta",10,0,2000,-3,3,"Gen #eta of A"},
+{"A_gen_phi","#phi",10,0,2000,-4,4,"Gen #phi of A"}{"A_gen_energy","Energy (GeV)",10,0,2000,0,1000,"Gen energy of A"},
+{"Lorentz boost of A","Lorentz boost (#gamma)",10,1,2000,1,7000,"Lorrentz boost of A"}i{"No. of gen photons","No. of photons",0,200,0,4,"No. 0f gen Photons"}};
    
-  vector<string> loghist  ={"Lorentz boost of A","E_pho2_by_E_pho1","Pho1_hit_E"} ;                                                                                                              
+ /*  varName ={"M_gen","A_gen_pT","A_gen_eta","A_gen_phi","A_gen_energy","Lorentz boost of A","No. of gen photons","Photon1 gen eta","Photon1 gen phi","Photon1 gen pT","Photon1 gen E",
+   "Photon2 gen eta","Photon2 gen phi","Photon2 gen pT","Photon2 gen E","E_sublead_by_E_lead","E_pho2_by_E_pho1","No. of reco photons",
+   "Photon1 EE rechit eta","Photon2 EE rechit eta","ES Layer 1 hits","ES Layer 2 hits","Reco_pho1_pt","Reco_pho2_pt","Reco_pho1_eta","Reco_pho2_eta","Pho1_hit_X","Pho2_hit_X","Pho1_hit_Y","Pho2_hit_Y","Pho1_hit_Z","Pho2_hit_Z"};*/   
+
+  vector<string>GEN ={"M_gen","A_gen_pT","A_gen_eta","A_gen_phi","A_gen_energy","Lorentz boost of A","No. of gen photons","Photon1 gen eta","Photon1 gen phi","Photon1 gen pT","Photon1 gen E",
+   "Photon2 gen eta","Photon2 gen phi","Photon2 gen pT","Photon2 gen E","E_sublead_by_E_lead","E_pho2_by_E_pho1"}  ; 
+                  
+  vector<string> loghist  ={"Lorentz boost of A","E_pho2_by_E_pho1"} ;                                                                                                              
+ /*  vector <string>  xLabel;
+
+  xLabel={"Mass (GeV)","Gen pT (in GeV)","#eta","#phi","Energy (GeV)","Lorentz boost", "No. of gen photons","#eta","#phi","pT (GeV)","Energy (GeV)","#eta","#phi","pT (GeV)","Energy (GeV)",
+  "Energy ratio","Energy ratio","No. of reco photons","#eta","#eta","No. of ES L1 hits per event","No. of ES L2 hits per event","pT (in GeV)","pT (in GeV)","#eta","#eta","X (in cm)","X (in cm)","Y (in cm)","Y (in cm)","|Z| (in cm)","|Z| (in cm)"};  
+   
   vector <int> rebin;
-  rebin={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
-  vector<double> ymin ={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-  vector<double> ymax={20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20};
-  vector<double> xmin ={0,  0,  -3, -4, 0,    0,     0, -3, -4,  0,    0,  0, -3, -160,-160, 250,  0, 0,    0};
-  vector<double> xmax={2.1, 120, 3,  4, 1000, 7000, 4,   3,  4, 120, 1000, 4,  3, 160, 160, 350, 100, 300,    300};
+  rebin={10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,12,12,12,12,10,10};
+  vector<double> ymin ={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+  vector<double> ymax={2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,20,20,200,200,200,200,200,200,200,200,200,200,200};
+  vector<double> xmin ={0,  0,  -3, -4, 0,    0,    0,  -3,   -4,  0,   0,    -3,   -4,   0,    0,    0,  0,   0,     -3, -3,   0,    0,	  0,	    0, -3,  -3,-160,-160,-160,-160,250,250};
+  vector<double> xmax={2.1, 120, 3,  4, 1000, 7000, 3,  3,    4,  800, 1000,  3,    4,   800,  1000, 4,  100,  10,      3,  3,  300,  300,	150,	150,  3,   3, 160,160,160,160,350,350};
 
   cout<<"different vector sizes "<<endl;
-  cout<<"Varname"<<"\t"<<varName.size()<<"\t"<<"xLabel"<<"\t"<<xLabel.size()<<"\t"<<"rebin"<<"\t"<<rebin.size()<<"\t"<<"\t"<<"ymin"<<"\t"<<ymin.size()<<"\t"<<"ymax"<<"\t"<<ymax.size()<<"\t"<<"xmax"<<"\t"<<xmax.size()<<"\t"<<"xmin"<<"\t"<<xmin.size()<<endl;
-  cout <<xLabel[0]<<endl;
+  cout<<varName.size()<<"\t"<<xLabel.size()<<"\t"<<rebin.size()<<"\t"<<xmax.size()<<"\t"<<xmin.size()<<"\t"<<legend_texts.size()<<endl;*/
   bool flag=false;
  
   sprintf(hname,"temp.root");
@@ -401,21 +282,29 @@ void generate1Dplot()
   for(int i_file=0; i_file<n_files;i_file++)
     {      
      
-      for(int i_cut=0; i_cut<varName.size();i_cut++)
+      for(int i_cut=0; i_cut<size(varName);i_cut++)
 	{
+          int rebin = varName[i_cut].intData;
+          string xLabel = varName[i_cut].str2;
+          double ymin = varName[i_cut].double1;
+          double ymax = varName[i_cut].double2;
+          double xmin = varName[i_cut].double3;
+          double xmax = varName[i_cut].double4;
+          vector<string> legend_texts = {varName[i_cut].str3}; 
 	  vector<TH1F*> hist_list;
 	  
-	  sprintf(hist_name,"%s",varName[i_cut].c_str());
+	  sprintf(hist_name,"%s",varName[i_cut].str1.c_str());
+
 	  cout<<hist_name<<"\t"<<i_cut<<"\t"<<i_file<<"\t"<<f[i_file]->GetName()<<endl;
           
 	  TH1F* h_resp2 = (TH1F*)f[i_file]->Get(hist_name); // SR
-	  h_resp2->GetXaxis()->SetTitle(xLabel[i_cut].c_str());
-	  cout<<"resp2 "<<h_resp2->Integral()<<"\t"<<rebin[i_cut]<<"\t"<<xmin[i_cut]<<"\t"<<xmax[i_cut]<<endl;
+	  h_resp2->GetXaxis()->SetTitle(xLabel.c_str());
+	  cout<<"resp2 "<<h_resp2->Integral()<<"\t"<<rebin<<"\t"<<xmin<<"\t"<<xmax<<endl;
 	  
-	  h_resp2->Rebin(rebin[i_cut]);
+	  h_resp2->Rebin(rebin);
 	 
 	  
-	  h_resp2= setMyRange(h_resp2,xmin[i_cut],xmax[i_cut]+0.01*xmax[i_cut]);
+	  h_resp2= setMyRange(h_resp2,xmin,xmax+0.01*xmax);
 	  setLastBinAsOverFlow(h_resp2);
 	  
 	  
@@ -424,12 +313,18 @@ void generate1Dplot()
 	  	 
 	  cout<<h_resp2->Integral()<<"\t"<<f[i_file]->GetName()<<endl;	 
 	  cout<<" hist_list.size() "<<hist_list.size()<<"\t "<<endl;
-    string hst_name= to_string(1000 + i_cut) + hist_name;
-	  int LOG = count(loghist.begin(), loghist.end(),varName[i_cut]);
-	  if(LOG){generate_1Dplot(hist_list,hst_name.c_str(),xLabel[i_cut].c_str(),"Entries",rebin[i_cut],ymin[i_cut],ymax[i_cut],xmin[i_cut],xmax[i_cut],leg_head,false,true,false,true,filetag[i_file].c_str(),legend_texts[i_cut]);
+          std::ostringstream oss;
+          oss << std::setw(4) << std::setfill('0') << i_cut <<hist_name;
+          string hst_name = oss.str();
+
+          int gen = count(GEN.begin(),GEN.end(),varName[i_cut].str1);
+	  int LOG = count(loghist.begin(), loghist.end(),varName[i_cut].str1);
+          if(gen){hst_name = "GEN_"+hst_name;}
+          else {hst_name = "RECO_" + hst_name;}
+	  if(LOG){generate_1Dplot(hist_list,hst_name.c_str(),xLabel.c_str(),"Entries",rebin,ymin,ymax,xmin,xmax,leg_head,false,true,false,true,filetag[i_file].c_str(),legend_texts);
 	  }
 	  else {
-generate_1Dplot(hist_list,hst_name.c_str(),xLabel[i_cut].c_str(),"Entries",rebin[i_cut],ymin[i_cut],ymax[i_cut],xmin[i_cut],xmax[i_cut],leg_head,false,false,false,true,filetag[i_file].c_str(),legend_texts[i_cut]);
+generate_1Dplot(hist_list,hst_name.c_str(),xLabel.c_str(),"Entries",rebin,ymin,ymax,xmin,xmax,leg_head,false,false,false,true,filetag[i_file].c_str(),legend_texts);
           }
 	}
       //fout->Close();
