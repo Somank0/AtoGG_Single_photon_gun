@@ -22,6 +22,7 @@ cd MySampleProduction/MyPiZeros/python
 ./runSkimmer_unclustered.sh 1 1 1
 
 #The skimmer calls the file 'PhotonRefinedRechitNtuplelizer.cc' that has been modified for the single photon samples for domain continuation of the mass regressor.
+
 #The skimmer will assign a random mass to the photons. The range of masses can be modified in the 'PhotonRefinedRechitNtuplelizer.cc' file as per required.
 
 #Analyze the ntuplelized/skimmed file using the analyzer.
