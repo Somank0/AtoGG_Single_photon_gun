@@ -19,7 +19,7 @@ do
 	
 	echo "==============================Starting Sample generation for mass $i. GEN-SIM step=============================="
 	echo "------------------------------Using CMSSW_10_6_29------------------------------"
-	cmsRun AToGG_GEN_SIM_MeV_mass_fixed.py mass=$i ptMin=20 ptMax=100 etaMin=1.57 etaMax=2.5 maxEvents=10 clusterID=$4;
+	cmsRun AToGG_GEN_SIM_MeV_mass_fixed.py mass=$i ptMin=20 ptMax=100 etaMin=-1.44 etaMax=1.44 maxEvents=10 clusterID=$4;
 	echo "==============================GEN-SIM step complete! Starting DIGI-PREMIX-RAW step=============================="
 	cmsRun genSimDigiRaw_mcProd_SS.py mass=$i clusterID=$4;
 	echo "==============================DIGI-PREMIX-RAW step complete! Starting HLT step=============================="
